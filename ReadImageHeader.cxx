@@ -84,7 +84,7 @@ if( entryvalue )\
 template< class T >
 void Print( std::vector< T > vec , std::string name )
 {
-   std::cout << name << ": " << std::flush ;
+   std::cout << name << "-: " << std::flush ;
    VectorPrint< T >( vec ) ;
    std::cout << std::endl ;
 }
@@ -92,20 +92,33 @@ void Print( std::vector< T > vec , std::string name )
 template<>
 void Print( std::vector< std::vector< double > > vec , std::string name )
 {
-   std::cout << name << ": " << std::flush ;
+   std::cout << name << "-: " << std::flush ;
    MatrixPrint< double >( vec ) ;
    std::cout << std::endl ;
 }
 
+
+struct InvalidChar
+{
+    bool operator()(char c) const {
+        return !isprint((unsigned)c);
+    }
+};
+
+
 void TrimString( std::string &val )
 {
-   for( std::size_t i = val.size() - 1 ; i > 0 ; i-- )
-   {
+  if( !val.empty() )
+  {
+    for( std::size_t i = val.size() - 1 ; i > 0 ; i-- )
+    {
       if( val[ i ] == '\n' || val[ i ] == '\r' )
       {
-         val[ i ] = '\0' ;
+        val[ i ] = '\0' ;
       }
-   }
+    }
+  }
+  val.erase( std::remove_if(val.begin(),val.end(),InvalidChar()), val.end() ) ;
 }
 
 //What pixeltype is the image 

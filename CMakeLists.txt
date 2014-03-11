@@ -11,7 +11,5 @@ set(ReadImageHeader_SOURCE ReadImageHeader.cxx)
 add_executable(ReadImageHeader ${ReadImageHeader_SOURCE})
 
 target_link_libraries (ReadImageHeader
-  ITKIO
-  ITKAlgorithms
-  ITKBasicFilters
+ ${ITK_LIBRARIES}
 )
