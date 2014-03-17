@@ -84,7 +84,7 @@ if( entryvalue )\
 template< class T >
 void Print( std::vector< T > vec , std::string name )
 {
-   std::cout << name << "-: " << std::flush ;
+   std::cout << name << ": " << std::flush ;
    VectorPrint< T >( vec ) ;
    std::cout << std::endl ;
 }
@@ -92,7 +92,7 @@ void Print( std::vector< T > vec , std::string name )
 template<>
 void Print( std::vector< std::vector< double > > vec , std::string name )
 {
-   std::cout << name << "-: " << std::flush ;
+   std::cout << name << ": " << std::flush ;
    MatrixPrint< double >( vec ) ;
    std::cout << std::endl ;
 }
