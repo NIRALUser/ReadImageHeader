@@ -4,7 +4,7 @@
 #include <string>
 #include <itkVectorImage.h>
 #include <itkMetaDataObject.h>
-
+#include "ReadImageHeaderCLP.h"
 
 #define TypeMACRO( M )\
 M ( unsigned char ) ;\
@@ -123,6 +123,7 @@ void TrimString( std::string &val )
 
 //What pixeltype is the image 
 void GetImageType( const char* fileName ,
+                   bool verbose ,
                    itk::ImageIOBase::IOPixelType &pixelType ,
                    itk::ImageIOBase::IOComponentType &componentType ,
                    unsigned int &dim
@@ -139,7 +140,6 @@ void GetImageType( const char* fileName ,
    dim = imageReader->GetImageIO()->GetNumberOfDimensions() ;
    std::cout << "Pixel Type: " << imageReader->GetImageIO()->GetPixelTypeAsString( pixelType ) << std::endl ;
    std::cout << "Component Type: " << imageReader->GetImageIO()->GetComponentTypeAsString( componentType ) << std::endl ;
-   std::cout << "Byte Order: " << imageReader->GetImageIO()->GetByteOrderAsString( byte ) << std::endl ;
    std::cout << "Compression: " << imageReader->GetImageIO()->GetUseCompression() << std::endl ;
    std::vector< unsigned int > size ;
    std::vector< double > origin ;
@@ -158,6 +158,11 @@ void GetImageType( const char* fileName ,
    Print< std::vector< double > >( direction , "Direction" ) ;
    std::cout << "Number of Components: " << imageReader->GetImageIO()->GetNumberOfComponents() << std::endl ;
    std::cout << "Component size: " << imageReader->GetImageIO()->GetComponentSize() << std::endl ;
+   if( verbose == false )
+   {
+     return ;
+   }
+   std::cout << "Byte Order: " << imageReader->GetImageIO()->GetByteOrderAsString( byte ) << std::endl ;
    itk::ImageIOBase::FileType ft = imageReader->GetImageIO()->GetFileType() ;
    std::cout << "File Type: " << imageReader->GetImageIO()->GetFileTypeAsString( ft ) << std::endl ;
    std::cout << "Image size in bytes: " << imageReader->GetImageIO()->GetImageSizeInBytes() << std::endl ;
@@ -215,84 +220,63 @@ int Convert( std::string input , std::string output )
          itk::ImageFileReader< ImageType >::New() ;
    imageReader->SetFileName( input ) ;
    imageReader->Update() ;
-   unsigned int dim = imageReader->GetImageIO()->GetNumberOfDimensions() ;
-   std::vector< double > spacing ;
-   for( unsigned int i = 0 ; i < dim ; i++ )
-   {
-      spacing.push_back( imageReader->GetImageIO()->GetSpacing( i ) ) ;
-   }
-   spacing.pop_back() ;
-   spacing.insert( spacing.begin() , 0 ) ;
-   for( unsigned int i = 0 ; i < dim ; i++ )
-   {
-      imageReader->GetImageIO()->SetSpacing( i , spacing[ i ] ) ;
-   }
-   spacing.clear() ;
-   for( unsigned int i = 0 ; i < dim ; i++ )
-   {
-      spacing.push_back( imageReader->GetImageIO()->GetSpacing( i ) ) ;
-   }
-   Print< double >( spacing , "Spacing" ) ;
    typename itk::ImageFileWriter< ImageType >::Pointer imageWriter =
          itk::ImageFileWriter< ImageType >::New() ;
    imageWriter->SetFileName( output.c_str() ) ;
    imageWriter->SetInput( imageReader->GetOutput() ) ;
    imageWriter->Update() ;
-   return 0 ;
+   return EXIT_SUCCESS ;
 }
 
 
-int main( int argc , const char* argv[] )
+int main( int argc , char* argv[] )
 {
-   if( argc < 2 )
-   {
-      std::cout << "Give input image" << std::endl ;
-      return 1 ;
-   }
+   PARSE_ARGS ;
    itk::ImageIOBase::IOPixelType pixelType ;
    itk::ImageIOBase::IOComponentType componentType ;
    unsigned dim ;
-   GetImageType( argv[ 1 ] , pixelType , componentType , dim ) ;
-   if( argc != 3 )
+   GetImageType( inputFile.c_str() , verbose , pixelType , componentType , dim ) ;
+   if( outputFile.empty() )
    {
-      return 0 ;
+      return EXIT_SUCCESS ;
    }
    switch( componentType )
    {
       case itk::ImageIOBase::UCHAR:
-         return Convert< unsigned char >( argv[ 1 ] , argv[ 2 ] ) ;
+         return Convert< unsigned char >( inputFile.c_str() , outputFile.c_str() ) ;
          break ;
       case itk::ImageIOBase::CHAR:
-         return Convert< char >( argv[ 1 ] , argv[ 2 ] ) ;
+         return Convert< char >( inputFile.c_str() , outputFile.c_str() ) ;
          break ;
       case itk::ImageIOBase::USHORT:
-         return Convert< unsigned short >( argv[ 1 ] , argv[ 2 ] ) ;
+         return Convert< unsigned short >( inputFile.c_str() , outputFile.c_str() ) ;
          break ;
       case itk::ImageIOBase::SHORT:
-         return Convert< short >( argv[ 1 ] , argv[ 2 ] ) ;
+         return Convert< short >( inputFile.c_str() , outputFile.c_str() ) ;
          break ;
       case itk::ImageIOBase::UINT:
-         return Convert< unsigned int >( argv[ 1 ] , argv[ 2 ] ) ;
+         return Convert< unsigned int >( inputFile.c_str() , outputFile.c_str() ) ;
          break ;
       case itk::ImageIOBase::INT:
-         return Convert< int >( argv[ 1 ] , argv[ 2 ] ) ;
+         return Convert< int >( inputFile.c_str() , outputFile.c_str() ) ;
          break ;
       case itk::ImageIOBase::ULONG:
-         return Convert< unsigned long >( argv[ 1 ] , argv[ 2 ] ) ;
+         return Convert< unsigned long >( inputFile.c_str() , outputFile.c_str() ) ;
          break ;
       case itk::ImageIOBase::LONG:
-         return Convert< long >( argv[ 1 ] , argv[ 2 ] ) ;
+         return Convert< long >( inputFile.c_str() , outputFile.c_str() ) ;
          break ;
       case itk::ImageIOBase::FLOAT:
-         return Convert< float >( argv[ 1 ] , argv[ 2 ] ) ;
+         return Convert< float >( inputFile.c_str() , outputFile.c_str() ) ;
          break ;
       case itk::ImageIOBase::DOUBLE:
-         return Convert< double >( argv[ 1 ] , argv[ 2 ] ) ;
+         return Convert< double >( inputFile.c_str() , outputFile.c_str() ) ;
          break ;
       case itk::ImageIOBase::UNKNOWNCOMPONENTTYPE:
       default:
          std::cerr << "unknown component type" << std::endl ;
          break ;
    }
-   return 0 ;
+   return EXIT_SUCCESS ;
 }
+

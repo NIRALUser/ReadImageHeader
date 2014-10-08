@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+  <category>Tool</category>
+  <title>ReadImageHeader</title>
+  <description>
+    Prints information contained in image header
+  </description>
+  <version>1.0.1</version>
+  <license></license>
+  <contributor>Francois Budin</contributor>
+  <parameters>
+  <label>Input/Ouput</label>
+    <description>Input/output parameters</description>
+      <image type="any">
+        <name>inputFile</name>
+        <label>Input File</label>
+        <channel>input</channel>
+        <index>0</index>
+        <description>Input image file</description>
+        <default></default>
+      </image>
+      <image type="any">
+        <name>outputFile</name>
+        <label>Output File</label>
+        <channel>output</channel>
+        <flag>o</flag>
+        <longflag>output</longflag>
+        <description>Output image file - Useful to convert image file extension</description>
+        <default></default>
+      </image>
+      <boolean>
+        <name>verbose</name>
+        <flag>v</flag>
+        <label>Verbose</label>
+        <longflag>verbose</longflag>
+        <description>Prints extra information</description>
+        <default>false</default>
+      </boolean>
+  </parameters>
+</executable>
