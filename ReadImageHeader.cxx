@@ -163,7 +163,7 @@ void GetImageType( const char* fileName ,
      return ;
    }
    std::cout << "Byte Order: " << imageReader->GetImageIO()->GetByteOrderAsString( byte ) << std::endl ;
-   itk::ImageIOBase::FileType ft = imageReader->GetImageIO()->GetFileType() ;
+   itk::IOFileEnum ft = imageReader->GetImageIO()->GetFileType() ;
    std::cout << "File Type: " << imageReader->GetImageIO()->GetFileTypeAsString( ft ) << std::endl ;
    std::cout << "Image size in bytes: " << imageReader->GetImageIO()->GetImageSizeInBytes() << std::endl ;
    std::cout << "Image size in components: " << imageReader->GetImageIO()->GetImageSizeInComponents() << std::endl ;
